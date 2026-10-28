@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qorvix</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg1:   #0d0508;
+  --bg2:   #120609;
+  --bg3:   #1f0a10;
+  --deep:  #6b0f20;
+  --red:   #e63950;
+  --red2:  #ff5570;
+  --peach: #f7c59f;
+  --cream: #fff0e6;
+  --tx:    #f5e8e0;
+  --tx2:   #c49080;
+  --tx3:   #8a5548;
+}
+
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--bg1);
+  color: var(--tx);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+/* noise */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:999; opacity:0.5;
+}
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:1.6rem 4rem;
+  display:flex; align-items:center; justify-content:space-between;
+  backdrop-filter:blur(24px);
+  background:rgba(13,5,8,0.75);
+  border-bottom:1px solid rgba(230,57,80,0.08);
+}
+
+.logo-wrap { display:flex; align-items:center; gap:0.8rem; }
+
+.logo-mark svg { width:34px; height:34px; }
+
+.logo-text {
+  font-family:'Playfair Display', serif;
+  font-size:1.5rem;
+  font-weight:900;
+  letter-spacing:0.08em;
+  color:var(--tx);
+}
+.logo-text em {
+  font-style:italic;
+  background:linear-gradient(135deg, var(--red), var(--peach));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.nav-links { display:flex; gap:3rem; list-style:none; }
+.nav-links a {
+  color:var(--tx2);
+  text-decoration:none;
+  font-size:0.82rem;
+  letter-spacing:0.05em;
+  transition:color 0.3s;
+}
+.nav-links a:hover { color:var(--peach); }
+
+.nav-cta {
+  background:transparent;
+  border:1px solid rgba(230,57,80,0.45);
+  color:var(--red2);
+  padding:0.6rem 1.8rem;
+  font-family:'DM Sans', sans-serif;
+  font-size:0.78rem;
+  font-weight:500;
+  letter-spacing:0.1em;
+  cursor:pointer;
+  transition:all 0.3s;
+  position:relative; overflow:hidden;
+}
+.nav-cta::before {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(230,57,80,0.12),rgba(247,197,159,0.06));
+  transform:translateX(-100%); transition:transform 0.3s;
+}
+.nav-cta:hover::before { transform:translateX(0); }
+.nav-cta:hover { border-color:var(--red2); box-shadow:0 0 22px rgba(230,57,80,0.25); }
+
+/* ── HERO ── */
+.hero {
+  min-height:100vh;
+  display:flex; align-items:center;
+  padding:0 4rem;
+  position:relative; overflow:hidden;
+}
+
+/* bg glow blobs */
+.hero-glow {
+  position:absolute; inset:0; pointer-events:none; z-index:0;
+}
+.glow1 {
+  position:absolute;
+  width:600px; height:600px;
+  top:-100px; right:-150px;
+  background:radial-gradient(circle, rgba(107,15,32,0.35) 0%, transparent 65%);
+  border-radius:50%;
+  animation:drift1 10s ease-in-out infinite;
+}
+.glow2 {
+  position:absolute;
+  width:400px; height:400px;
+  bottom:-80px; left:10%;
+  background:radial-gradient(circle, rgba(230,57,80,0.1) 0%, transparent 65%);
+  border-radius:50%;
+  animation:drift2 13s ease-in-out infinite;
+}
+.glow3 {
+  position:absolute;
+  width:250px; height:250px;
+  top:40%; right:30%;
+  background:radial-gradient(circle, rgba(247,197,159,0.06) 0%, transparent 65%);
+  border-radius:50%;
+  animation:drift1 16s ease-in-out infinite reverse;
+}
+@keyframes drift1 {
+  0%,100%{ transform:translate(0,0) scale(1); }
+  50%{ transform:translate(-30px,20px) scale(1.08); }
+}
+@keyframes drift2 {
+  0%,100%{ transform:translate(0,0) scale(1); }
+  50%{ transform:translate(20px,-25px) scale(1.06); }
+}
+
+/* diagonal accent */
+.hero::before {
+  content:'';
+  position:absolute;
+  top:0; right:0;
+  width:45%; height:100%;
+  background:linear-gradient(160deg, rgba(107,15,32,0.18) 0%, transparent 60%);
+  clip-path:polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%);
+  pointer-events:none;
+}
+
+/* vertical accent line */
+.hero::after {
+  content:'';
+  position:absolute;
+  top:0; right:36%;
+  width:1px; height:100%;
+  background:linear-gradient(to bottom,
+    transparent,
+    rgba(230,57,80,0.35) 30%,
+    rgba(247,197,159,0.5) 55%,
+    rgba(230,57,80,0.25) 75%,
+    transparent);
+  pointer-events:none;
+}
+
+.hero-content {
+  max-width:680px;
+  position:relative; z-index:2;
+  padding-top:5rem;
+}
+
+.eyebrow {
+  display:inline-flex; align-items:center; gap:1rem;
+  margin-bottom:2.5rem;
+  opacity:0; animation:revealUp 0.9s 0.2s ease forwards;
+}
+.ey-line { width:38px; height:1px; background:linear-gradient(90deg, var(--red), transparent); }
+.ey-text {
+  font-size:0.68rem; letter-spacing:0.35em;
+  text-transform:uppercase; color:var(--red2); font-weight:400;
+}
+
+.hero-h1 {
+  font-family:'Playfair Display', serif;
+  font-size:clamp(3.2rem,6.5vw,6.8rem);
+  font-weight:900;
+  line-height:0.95;
+  margin-bottom:2rem;
+  opacity:0; animation:revealUp 0.9s 0.35s ease forwards;
+}
+.hero-h1 .w1 { display:block; color:var(--tx); }
+.hero-h1 .w2 {
+  display:block; font-style:italic;
+  background:linear-gradient(135deg, var(--red) 0%, var(--red2) 40%, var(--peach) 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 0 30px rgba(230,57,80,0.4));
+}
+.hero-h1 .w3 {
+  display:block;
+  -webkit-text-stroke:1.5px rgba(245,232,224,0.2);
+  color:transparent;
+}
+
+.hero-p {
+  font-size:1rem; line-height:1.9; color:var(--tx2);
+  font-weight:300; max-width:460px; margin-bottom:3rem;
+  opacity:0; animation:revealUp 0.9s 0.5s ease forwards;
+}
+
+.hero-btns {
+  display:flex; gap:1.2rem; align-items:center;
+  opacity:0; animation:revealUp 0.9s 0.65s ease forwards;
+}
+
+.btn-red {
+  background:linear-gradient(135deg, var(--deep) 0%, var(--red) 55%, var(--red2) 100%);
+  color:#fff;
+  padding:1rem 2.8rem;
+  font-family:'DM Sans', sans-serif;
+  font-size:0.82rem; font-weight:600;
+  letter-spacing:0.15em; text-transform:uppercase;
+  border:none; cursor:pointer;
+  position:relative; overflow:hidden;
+  transition:all 0.4s;
+  box-shadow:0 8px 30px rgba(230,57,80,0.4);
+}
+.btn-red::after {
+  content:'';
+  position:absolute; top:0; left:-100%;
+  width:100%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);
+  transition:left 0.5s;
+}
+.btn-red:hover { box-shadow:0 12px 45px rgba(230,57,80,0.65); transform:translateY(-2px); }
+.btn-red:hover::after { left:100%; }
+
+.btn-ghost {
+  background:transparent; border:none;
+  color:var(--tx2); font-size:0.82rem;
+  font-weight:400; letter-spacing:0.05em;
+  cursor:pointer;
+  display:flex; align-items:center; gap:0.6rem;
+  transition:color 0.3s; padding:1rem 0;
+}
+.btn-ghost .arr {
+  width:28px; height:28px;
+  border:1px solid currentColor; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.7rem; transition:transform 0.3s;
+}
+.btn-ghost:hover { color:var(--peach); }
+.btn-ghost:hover .arr { transform:translateX(4px); }
+
+/* hero right cards */
+.hero-cards {
+  position:absolute; right:4rem; top:50%;
+  transform:translateY(-50%);
+  z-index:2; width:300px;
+  display:flex; flex-direction:column; gap:1px;
+  opacity:0; animation:revealFade 1.2s 1s ease forwards;
+}
+
+.hcard {
+  background:rgba(31,10,16,0.7);
+  border:1px solid rgba(230,57,80,0.12);
+  backdrop-filter:blur(12px);
+  padding:1.6rem 1.8rem;
+  transition:all 0.4s; position:relative;
+}
+.hcard::before {
+  content:'';
+  position:absolute; left:0; top:0; bottom:0; width:2px;
+  background:linear-gradient(to bottom, var(--red), var(--peach));
+  opacity:0; transition:opacity 0.4s;
+}
+.hcard:hover { background:rgba(107,15,32,0.2); transform:translateX(-5px); }
+.hcard:hover::before { opacity:1; }
+
+.hcard-num {
+  font-family:'Playfair Display', serif;
+  font-size:2.2rem; font-weight:700;
+  background:linear-gradient(135deg, var(--red2), var(--peach));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text; line-height:1;
+}
+.hcard-label {
+  font-size:0.72rem; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--tx3); margin-top:0.3rem;
+}
+
+/* ── MARQUEE ── */
+.marquee-wrap {
+  overflow:hidden;
+  border-top:1px solid rgba(230,57,80,0.08);
+  border-bottom:1px solid rgba(230,57,80,0.08);
+  padding:1.1rem 0;
+  background:rgba(18,6,9,0.6);
+}
+.marquee-track {
+  display:flex; gap:3.5rem;
+  animation:marquee 22s linear infinite; white-space:nowrap;
+}
+.m-item {
+  display:flex; align-items:center; gap:1.2rem;
+  font-size:0.72rem; letter-spacing:0.22em;
+  text-transform:uppercase; color:rgba(196,144,128,0.45); flex-shrink:0;
+}
+.m-dot { width:4px; height:4px; background:var(--red); border-radius:50%; }
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ── SERVICES ── */
+.services { padding:8rem 4rem; }
+
+.sec-tag {
+  font-size:0.66rem; letter-spacing:0.4em;
+  text-transform:uppercase; color:var(--red);
+  margin-bottom:1rem; display:flex; align-items:center; gap:0.8rem;
+}
+.sec-tag::before { content:''; width:28px; height:1px; background:var(--red); }
+
+.sec-title {
+  font-family:'Playfair Display', serif;
+  font-size:clamp(2rem,3.5vw,3rem);
+  font-weight:700; line-height:1.2;
+  color:var(--tx); margin-bottom:4rem; max-width:480px;
+}
+.sec-title em { font-style:italic; color:var(--red2); }
+
+.svc-list { display:flex; flex-direction:column; }
+
+.svc-row {
+  display:grid;
+  grid-template-columns:70px 1fr auto;
+  align-items:center; gap:2rem;
+  padding:2rem 1rem;
+  border-bottom:1px solid rgba(245,232,224,0.05);
+  transition:all 0.4s; cursor:default; position:relative;
+}
+.svc-row::before {
+  content:'';
+  position:absolute; inset:0;
+  background:rgba(107,15,32,0.06);
+  opacity:0; transition:opacity 0.4s;
+}
+.svc-row:hover::before { opacity:1; }
+.svc-row:hover .svc-n { color:var(--red2); }
+.svc-row:hover .svc-arr { opacity:1; transform:translateX(0); }
+
+.svc-n {
+  font-family:'Playfair Display', serif;
+  font-size:1.8rem; font-style:italic;
+  color:rgba(245,232,224,0.1); transition:color 0.4s;
+}
+.svc-name {
+  font-family:'Playfair Display', serif;
+  font-size:1.35rem; font-weight:700;
+  color:var(--tx); margin-bottom:0.35rem;
+}
+.svc-desc {
+  font-size:0.83rem; color:var(--tx2);
+  font-weight:300; line-height:1.7;
+}
+.svc-tags { display:flex; gap:0.45rem; flex-wrap:wrap; justify-content:flex-end; }
+.tag {
+  font-size:0.64rem; letter-spacing:0.1em;
+  padding:0.28rem 0.7rem;
+  border:1px solid rgba(230,57,80,0.2);
+  color:rgba(247,197,159,0.7); text-transform:uppercase;
+}
+.svc-arr {
+  opacity:0; transform:translateX(-10px);
+  transition:all 0.4s; color:var(--red2);
+  font-size:1.1rem; position:absolute; right:0.5rem;
+}
+
+/* ── PROCESS ── */
+.process {
+  padding:7rem 4rem;
+  background:rgba(31,10,16,0.4);
+  border-top:1px solid rgba(230,57,80,0.07);
+  border-bottom:1px solid rgba(230,57,80,0.07);
+}
+
+.proc-grid {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:0; margin-top:3.5rem; position:relative;
+}
+.proc-grid::before {
+  content:'';
+  position:absolute;
+  top:1.8rem; left:12%; right:12%;
+  height:1px;
+  background:linear-gradient(90deg,
+    transparent,
+    rgba(230,57,80,0.3) 20%,
+    rgba(247,197,159,0.4) 50%,
+    rgba(230,57,80,0.3) 80%,
+    transparent);
+}
+
+.proc-item { padding:0 2rem; text-align:center; }
+.proc-num {
+  width:38px; height:38px;
+  border:1px solid rgba(230,57,80,0.4);
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Playfair Display', serif;
+  font-size:0.82rem; font-style:italic; color:var(--red2);
+  margin:0 auto 1.5rem;
+  background:var(--bg1); position:relative; z-index:1;
+}
+.proc-title {
+  font-size:0.88rem; font-weight:500;
+  color:var(--tx); margin-bottom:0.5rem; letter-spacing:0.04em;
+}
+.proc-desc { font-size:0.77rem; color:var(--tx2); line-height:1.7; font-weight:300; }
+
+/* ── PALETTE STRIP ── */
+.palette-section { padding:6rem 4rem; }
+
+.pal-strip {
+  display:flex; height:180px;
+  margin-top:3rem; overflow:hidden;
+  border:1px solid rgba(245,232,224,0.05);
+}
+.pal-s {
+  flex:1; position:relative; cursor:default;
+  transition:flex 0.5s cubic-bezier(0.4,0,0.2,1); overflow:hidden;
+}
+.pal-s:hover { flex:3; }
+.pal-s .pi {
+  position:absolute; bottom:0; left:0; right:0;
+  padding:1rem;
+  background:linear-gradient(to top, rgba(13,5,8,0.95), transparent);
+  transform:translateY(100%); transition:transform 0.4s;
+}
+.pal-s:hover .pi { transform:translateY(0); }
+.pi-name { font-size:0.72rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--tx); }
+.pi-hex { font-size:0.64rem; color:rgba(245,232,224,0.4); font-family:monospace; margin-top:0.2rem; }
+
+/* ── QUOTE ── */
+.quote-section {
+  padding:8rem 4rem;
+  text-align:center; position:relative; overflow:hidden;
+}
+.quote-section::before {
+  content:'"';
+  position:absolute; top:-2rem; left:50%;
+  transform:translateX(-50%);
+  font-family:'Playfair Display', serif;
+  font-size:20rem; font-weight:900;
+  color:rgba(107,15,32,0.06);
+  line-height:1; pointer-events:none;
+  letter-spacing:-0.1em;
+}
+.quote-text {
+  font-family:'Playfair Display', serif;
+  font-size:clamp(1.6rem,3.5vw,2.8rem);
+  font-weight:400; font-style:italic;
+  color:var(--tx); line-height:1.5;
+  max-width:800px; margin:0 auto 2rem;
+  position:relative; z-index:1;
+}
+.quote-text span {
+  background:linear-gradient(135deg,var(--red),var(--peach));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.quote-sub {
+  font-size:0.72rem; letter-spacing:0.3em;
+  text-transform:uppercase; color:var(--tx3);
+}
+
+/* ── FOOTER ── */
+footer {
+  padding:5rem 4rem 3rem;
+  border-top:1px solid rgba(230,57,80,0.08);
+}
+.footer-top {
+  display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr;
+  gap:4rem; margin-bottom:4rem;
+}
+.ft-logo {
+  font-family:'Playfair Display', serif;
+  font-size:1.8rem; font-weight:900;
+  letter-spacing:0.06em;
+  display:block; margin-bottom:1rem;
+}
+.ft-logo em {
+  font-style:italic;
+  background:linear-gradient(135deg,var(--red),var(--peach));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.ft-desc { font-size:0.8rem; color:var(--tx2); line-height:1.8; font-weight:300; max-width:230px; }
+
+.fc h4 {
+  font-size:0.66rem; letter-spacing:0.28em;
+  text-transform:uppercase; color:var(--red2); margin-bottom:1.5rem;
+}
+.fc ul { list-style:none; }
+.fc li {
+  font-size:0.8rem; color:var(--tx2);
+  margin-bottom:0.75rem; cursor:pointer; transition:color 0.3s;
+}
+.fc li:hover { color:var(--peach); }
+
+.footer-bottom {
+  display:flex; justify-content:space-between; align-items:center;
+  padding-top:2rem;
+  border-top:1px solid rgba(245,232,224,0.04);
+}
+.footer-bottom p { font-size:0.7rem; color:rgba(196,144,128,0.3); letter-spacing:0.1em; }
+.powered { display:flex; align-items:center; gap:0.4rem; font-size:0.68rem; color:rgba(196,144,128,0.3); }
+.powered b { color:var(--red2); font-weight:500; }
+
+/* ── ANIMATIONS ── */
+@keyframes revealUp {
+  from{opacity:0;transform:translateY(35px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes revealFade {
+  from{opacity:0;transform:translateY(-40%) translateX(18px)}
+  to{opacity:1;transform:translateY(-50%) translateX(0)}
+}
+
+@media(max-width:900px){
+  nav{padding:1.4rem 1.5rem;}
+  .nav-links,.hero-cards{display:none;}
+  .hero,.services,.process,.palette-section,.quote-section,footer{padding-left:1.5rem;padding-right:1.5rem;}
+  .proc-grid{grid-template-columns:1fr 1fr;gap:2.5rem;}
+  .proc-grid::before{display:none;}
+  .footer-top{grid-template-columns:1fr 1fr;gap:2rem;}
+  .pal-strip{height:110px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo-wrap">
+    <svg width="34" height="34" viewBox="0 0 36 36">
+      <polygon points="18,2 34,10 34,26 18,34 2,26 2,10"
+        fill="none" stroke="url(#lg)" stroke-width="1.5"/>
+      <polygon points="18,8 28,13 28,23 18,28 8,23 8,13"
+        fill="url(#lgf)" opacity="0.12"/>
+      <circle cx="18" cy="18" r="3.5" fill="url(#lg)"/>
+      <defs>
+        <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#e63950"/>
+          <stop offset="100%" stop-color="#f7c59f"/>
+        </linearGradient>
+        <linearGradient id="lgf" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#e63950"/>
+          <stop offset="100%" stop-color="#f7c59f"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <span class="logo-text">Qor<em>vix</em></span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#">Services</a></li>
+    <li><a href="#">Portfolio</a></li>
+    <li><a href="#">Process</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <button class="nav-cta">Start Project →</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow">
+    <div class="glow1"></div>
+    <div class="glow2"></div>
+    <div class="glow3"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="eyebrow">
+      <div class="ey-line"></div>
+      <span class="ey-text">Digital Agency · Est. 2025</span>
+    </div>
+    <h1 class="hero-h1">
+      <span class="w1">We Build</span>
+      <span class="w2">Exceptional</span>
+      <span class="w3">Digital.</span>
+    </h1>
+    <p class="hero-p">
+      From stunning websites to powerful e-commerce stores and enterprise cloud hosting — we craft digital experiences that drive real business growth.
+    </p>
+    <div class="hero-btns">
+      <button class="btn-red">Launch Your Vision</button>
+      <button class="btn-ghost">
+        See Our Work
+        <span class="arr">→</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="hero-cards">
+    <div class="hcard">
+      <div class="hcard-num">200+</div>
+      <div class="hcard-label">Projects Delivered</div>
+    </div>
+    <div class="hcard">
+      <div class="hcard-num">99.9%</div>
+      <div class="hcard-label">Uptime Guaranteed</div>
+    </div>
+    <div class="hcard">
+      <div class="hcard-num">24/7</div>
+      <div class="hcard-label">Support & Monitoring</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="m-item"><span class="m-dot"></span>Web Design</span>
+    <span class="m-item"><span class="m-dot"></span>E-Commerce</span>
+    <span class="m-item"><span class="m-dot"></span>Cloud Hosting</span>
+    <span class="m-item"><span class="m-dot"></span>Google Cloud</span>
+    <span class="m-item"><span class="m-dot"></span>UI / UX Design</span>
+    <span class="m-item"><span class="m-dot"></span>SEO Optimization</span>
+    <span class="m-item"><span class="m-dot"></span>Maintenance</span>
+    <span class="m-item"><span class="m-dot"></span>Web Design</span>
+    <span class="m-item"><span class="m-dot"></span>E-Commerce</span>
+    <span class="m-item"><span class="m-dot"></span>Cloud Hosting</span>
+    <span class="m-item"><span class="m-dot"></span>Google Cloud</span>
+    <span class="m-item"><span class="m-dot"></span>UI / UX Design</span>
+    <span class="m-item"><span class="m-dot"></span>SEO Optimization</span>
+    <span class="m-item"><span class="m-dot"></span>Maintenance</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services">
+  <p class="sec-tag">What We Offer</p>
+  <h2 class="sec-title">Built for <em>growth,</em><br>designed to last</h2>
+
+  <div class="svc-list">
+    <div class="svc-row">
+      <div class="svc-n">01</div>
+      <div>
+        <div class="svc-name">Website Development</div>
+        <div class="svc-desc">Custom, responsive websites engineered for performance, SEO, and conversion.</div>
+      </div>
+      <div class="svc-tags">
+        <span class="tag">React</span>
+        <span class="tag">WordPress</span>
+        <span class="tag">Custom</span>
+      </div>
+      <span class="svc-arr">→</span>
+    </div>
+    <div class="svc-row">
+      <div class="svc-n">02</div>
+      <div>
+        <div class="svc-name">E-Commerce Stores</div>
+        <div class="svc-desc">Full-featured online stores with smart inventory, secure checkout, and analytics.</div>
+      </div>
+      <div class="svc-tags">
+        <span class="tag">Shopify</span>
+        <span class="tag">Custom</span>
+        <span class="tag">Payment</span>
+      </div>
+      <span class="svc-arr">→</span>
+    </div>
+    <div class="svc-row">
+      <div class="svc-n">03</div>
+      <div>
+        <div class="svc-name">Cloud Hosting</div>
+        <div class="svc-desc">Enterprise-grade Google Cloud infrastructure with monthly management and 24/7 monitoring.</div>
+      </div>
+      <div class="svc-tags">
+        <span class="tag">Google Cloud</span>
+        <span class="tag">CDN</span>
+        <span class="tag">SSL</span>
+      </div>
+      <span class="svc-arr">→</span>
+    </div>
+    <div class="svc-row">
+      <div class="svc-n">04</div>
+      <div>
+        <div class="svc-name">Maintenance & Growth</div>
+        <div class="svc-desc">Ongoing updates, security patches, performance optimization and SEO improvements.</div>
+      </div>
+      <div class="svc-tags">
+        <span class="tag">Monthly</span>
+        <span class="tag">SEO</span>
+        <span class="tag">Support</span>
+      </div>
+      <span class="svc-arr">→</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process">
+  <p class="sec-tag">How We Work</p>
+  <h2 class="sec-title">From <em>idea</em> to launch,<br>seamlessly</h2>
+
+  <div class="proc-grid">
+    <div class="proc-item">
+      <div class="proc-num">1</div>
+      <div class="proc-title">Discovery</div>
+      <div class="proc-desc">We learn your brand, goals, and audience to define the perfect strategy.</div>
+    </div>
+    <div class="proc-item">
+      <div class="proc-num">2</div>
+      <div class="proc-title">Design</div>
+      <div class="proc-desc">Crafting pixel-perfect UI/UX that reflects your identity and captivates.</div>
+    </div>
+    <div class="proc-item">
+      <div class="proc-num">3</div>
+      <div class="proc-title">Development</div>
+      <div class="proc-desc">Clean, scalable code — fast, secure, and engineered to grow.</div>
+    </div>
+    <div class="proc-item">
+      <div class="proc-num">4</div>
+      <div class="proc-title">Launch & Host</div>
+      <div class="proc-desc">Deploy on Google Cloud with full monitoring, SSL, CDN, and support.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PALETTE -->
+<section class="palette-section">
+  <p class="sec-tag">Brand Identity</p>
+  <h2 class="sec-title">Our <em>Crimson Noir</em> palette</h2>
+
+  <div class="pal-strip">
+    <div class="pal-s" style="background:#0d0508">
+      <div class="pi"><div class="pi-name">Void Black</div><div class="pi-hex">#0d0508</div></div>
+    </div>
+    <div class="pal-s" style="background:linear-gradient(160deg,#120609,#1f0a10)">
+      <div class="pi"><div class="pi-name">Wine Dark</div><div class="pi-hex">#1f0a10</div></div>
+    </div>
+    <div class="pal-s" style="background:linear-gradient(160deg,#1f0a10,#6b0f20)">
+      <div class="pi"><div class="pi-name">Deep Crimson</div><div class="pi-hex">#6b0f20</div></div>
+    </div>
+    <div class="pal-s" style="background:linear-gradient(160deg,#6b0f20,#e63950)">
+      <div class="pi"><div class="pi-name">Vivid Red</div><div class="pi-hex">#e63950</div></div>
+    </div>
+    <div class="pal-s" style="background:linear-gradient(160deg,#e63950,#f7c59f)">
+      <div class="pi"><div class="pi-name">Warm Peach</div><div class="pi-hex">#f7c59f</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section">
+  <p class="quote-text">
+    "Where bold <span>vision</span> meets<br>flawless <span>execution</span>"
+  </p>
+  <p class="quote-sub">Qorvix — Powering the future of business online</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <span class="ft-logo">Qor<em>vix</em></span>
+      <p class="ft-desc">We build the digital presence your business deserves — from concept to cloud.</p>
+    </div>
+    <div class="fc">
+      <h4>Services</h4>
+      <ul>
+        <li>Website Design</li>
+        <li>E-Commerce</li>
+        <li>Cloud Hosting</li>
+        <li>Maintenance</li>
+      </ul>
+    </div>
+    <div class="fc">
+      <h4>Company</h4>
+      <ul>
+        <li>About Us</li>
+        <li>Portfolio</li>
+        <li>Pricing</li>
+        <li>Blog</li>
+      </ul>
+    </div>
+    <div class="fc">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e48c8188888ba4958b96928d9cca878b89">[email&#160;protected]</a></li>
+        <li>LinkedIn</li>
+        <li>Instagram</li>
+        <li>WhatsApp</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Qorvix. All rights reserved.</p>
+    <div class="powered">Powered by <b>Google Cloud</b></div>
+    <p>Privacy · Terms</p>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
